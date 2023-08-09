@@ -48,34 +48,37 @@ import kotlin.math.roundToInt
 fun Game(navController: NavHostController) {
 
 
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
+    var offsetX by remember { mutableStateOf(0f) } // Измените значение offsetX
+    var offsetY by remember { mutableStateOf(800f) }
     var scale by remember { mutableStateOf(1f) }
+
 
 
     val planeWidth = with(LocalDensity.current) { 80.dp.toPx() }
     val planeHeight = with(LocalDensity.current) { 80.dp.toPx() }
 
-    val bulletOffsetX = with(LocalDensity.current) { (planeWidth.toDp() - 32.dp).toPx() / 2 }
-    val bulletOffsetY = with(LocalDensity.current) { (planeHeight.toDp() - 32.dp).toPx() / 2 }
+    val bulletSize = with(LocalDensity.current) { 32.dp.toPx() }
 
-
-    var bullets by remember {
-        mutableStateOf(
-            listOf(
-                Bullet(
-                    x = bulletOffsetX,
-                    y = bulletOffsetY,
-                    speed = 5f
-                )
-            )
-        )
-    }
-
+    var bullets by remember { mutableStateOf(emptyList<Bullet>()) }
 
     LaunchedEffect(Unit) {
         while (true) {
-            // Создать новую коллекцию пуль, обновив их координаты на основе скорости
+            val newBullet = Bullet(
+                x =   (offsetX / 5 + (planeWidth - bulletSize - 20)),
+                y =   (offsetY / 4 + (planeHeight - bulletSize + 80)),
+                speed = 10f // Уменьшите это значение, чтобы пуля двигалась медленнее
+            )
+
+            bullets = bullets + newBullet
+
+            delay(1000) // 3 секунды
+        }
+    }
+
+    // координаты летящей пули
+    LaunchedEffect(Unit) {
+        while (true) {
+            // Обновить координаты пуль в списке на основе скорости
             val updatedBullets = bullets.map { bullet ->
                 bullet.copy(y = bullet.y - bullet.speed)
             }
@@ -84,6 +87,8 @@ fun Game(navController: NavHostController) {
             delay(16) // Обновление координат каждые 16 миллисекунд (приближенно к 60 FPS)
         }
     }
+
+
 
 
 
@@ -122,7 +127,7 @@ fun Game(navController: NavHostController) {
             ) {
                 TextButton(
                     onClick = {
-                        /*TODO*/
+                        navController.navigate("start_screen")
                     },
                     shape = RoundedCornerShape(4.dp),
 
@@ -318,6 +323,7 @@ fun Game(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 80.dp)
                 .pointerInput(Unit) {
                     detectTransformGestures { _, pan, zoom, _ ->
                         offsetX += pan.x
@@ -329,7 +335,7 @@ fun Game(navController: NavHostController) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 550.dp)
+                    .padding()
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.plane),
@@ -345,23 +351,23 @@ fun Game(navController: NavHostController) {
                         )
                 )
 
-                bullets.forEach { bullet ->
-                    Image(
-                        painter = painterResource(id = R.drawable.bullet),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .offset(bullet.x.dp, bullet.y.dp)
-                            .graphicsLayer(
-                                translationX = bullet.x,
-                                translationY = bullet.y
-                            )
-                    )
-                }
+
             }
         }
 
-
+        bullets.forEach { bullet ->
+            Image(
+                painter = painterResource(id = R.drawable.bullet),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(32.dp)
+                    .offset(bullet.x.dp, bullet.y.dp)
+                    .graphicsLayer(
+                        translationX = bullet.x,
+                        translationY = bullet.y
+                    )
+            )
+        }
     }
 
 
