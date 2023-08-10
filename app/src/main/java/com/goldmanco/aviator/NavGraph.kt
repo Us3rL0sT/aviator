@@ -12,7 +12,7 @@ import com.goldmanco.aviator.game_end.PlaneCrashed
 fun NavGraph() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "game") {
+    NavHost(navController = navController, startDestination = "start_screen") {
         composable("start_screen") { StartScreen(navController) }
         composable("game") { Game(navController) }
         composable("new_best_score") { NewBestScore(navController) }
