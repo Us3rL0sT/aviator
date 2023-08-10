@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -86,8 +85,6 @@ private fun isBulletCollidingWithEnemy(
     bullet: Bullet,
     enemy: EnemyPlane,
     bulletSize: Float,
-    planeWidthEnemy: Float,
-    planeHeightEnemy: Float
 ): Boolean {
     val bulletX = bullet.x
     val bulletY = bullet.y
@@ -196,7 +193,6 @@ fun Game(navController: NavHostController) {
 
     val planeWidthEnemy = with(LocalDensity.current) { 20.dp.toPx() }
     val planeHeightEnemy = with(LocalDensity.current) { 20.dp.toPx() }
-    val initialEnemyX = offsetX + (planeWidth + 50) / scale
 
 
     val bulletSize = with(LocalDensity.current) { 16.dp.toPx() }
@@ -228,7 +224,6 @@ fun Game(navController: NavHostController) {
 
             if (newBullet.y > 0 && newBullet.y < offsetY + 1000f) {
                 bullets = bullets + newBullet
-            } else {
             }
 
             delay(4000)
@@ -541,7 +536,7 @@ fun Game(navController: NavHostController) {
     }
 
 
-    Column() {
+    Column {
 
 
         Box(
@@ -782,7 +777,7 @@ fun Game(navController: NavHostController) {
     enemies.forEach { enemy ->
         // Проверяем столкновения пуль с врагом
         val isColliding = bullets.any { bullet ->
-            isBulletCollidingWithEnemy(bullet, enemy, bulletSize, planeWidthEnemy, planeHeightEnemy)
+            isBulletCollidingWithEnemy(bullet, enemy, bulletSize)
         }
 
         Image(
@@ -801,8 +796,6 @@ fun Game(navController: NavHostController) {
                     bullet,
                     enemy,
                     bulletSize,
-                    planeWidth,
-                    planeHeight
                 )
             }
             enemies = enemies.filter { it != enemy }
