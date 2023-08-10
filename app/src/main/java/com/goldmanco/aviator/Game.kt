@@ -238,16 +238,13 @@ fun Game(navController: NavHostController) {
     // координаты летящей пули
     LaunchedEffect(Unit) {
         while (true) {
-
+            // Обновить координаты пуль в списке на основе скорости
             val updatedBullets = bullets.map { bullet ->
                 bullet.copy(y = bullet.y - bullet.speed)
             }
-            bullets = updatedBullets.filter { it.y > offsetY - 800f }
+            bullets = updatedBullets
 
-            // Выводим отладочное сообщение о количестве оставшихся пуль на экране
-            println(bullets.size)
-
-            delay(16)
+            delay(16) // Обновление координат каждые 16 миллисекунд (приближенно к 60 FPS)
         }
     }
 
