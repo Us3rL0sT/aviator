@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,9 +20,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.goldmanco.aviator.sharedpreferences.BestPlayerScorePreferenceManager
+import com.goldmanco.aviator.sharedpreferences.PlayerHealthPreferenceManager
+import com.goldmanco.aviator.sharedpreferences.PlayerScorePreferenceManager
 
 @Composable
 fun StartScreen(navController: NavHostController) {
+
+
+    val context = LocalContext.current
+    val playerScorePreferenceManager = remember { PlayerScorePreferenceManager(context) }
+    val bestPlayerScorePreferenceManager = remember { BestPlayerScorePreferenceManager(context) }
+    val playerHealthPreferenceManager = remember { PlayerHealthPreferenceManager(context) }
+
+    playerScore = playerScorePreferenceManager.getScore()
+    bestPlayerScore = bestPlayerScorePreferenceManager.getBestScore()
+    playerHealth = playerHealthPreferenceManager.getPlayerHealth()
 
     Box(
         modifier = Modifier
@@ -46,6 +60,12 @@ fun StartScreen(navController: NavHostController) {
             TextButton(
                 onClick = {
                     navController.navigate("game")
+
+                    playerScore = 0
+                    bestPlayerScore = 0
+                    playerScorePreferenceManager.saveScore(playerScore)
+                    bestPlayerScorePreferenceManager.saveBestScore(bestPlayerScore)
+
                 },
 
                 shape = RoundedCornerShape(4.dp),
